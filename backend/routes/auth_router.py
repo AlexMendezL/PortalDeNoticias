@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 from starlette import status
 
@@ -32,3 +32,23 @@ async def forget_password(data: auth_schema.ForgetPasswordRequest, db: Session =
 @router.post("/forget_password_confirm", status_code=status.HTTP_200_OK)
 async def forget_password_confirm(data: auth_schema.ForgetPasswordConfirmRequest, db: Session = Depends(get_db)):
     return await AuthController.forget_password_confirm(data, db)
+
+
+@router.get("/login/google")
+async def login_via_google(request: Request):
+    return await AuthController.oauth_login(request, "google")
+
+
+@router.get("/google/callback")
+async def google_callback(request: Request, db: Session = Depends(get_db)):
+    return await AuthController.oauth_callback(request, "google", db)
+
+
+@router.get("/login/facebook")
+async def login_via_facebook(request: Request):
+    return await AuthController.oauth_login(request, "facebook")
+
+
+@router.get("/facebook/callback")
+async def facebook_callback(request: Request, db: Session = Depends(get_db)):
+    return await AuthController.oauth_callback(request, "facebook", db)

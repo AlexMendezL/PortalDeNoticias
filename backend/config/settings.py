@@ -16,6 +16,14 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 240
     REFRESH_TOKEN_EXPIRE_DAYS: int = 3
 
+    GOOGLE_CLIENT_ID: str
+    GOOGLE_CLIENT_SECRET : str
+    GOOGLE_REDIRECT_URI: str
+
+    FACEBOOK_CLIENT_ID: str
+    FACEBOOK_CLIENT_SECRET : str
+    FACEBOOK_REDIRECT_URI: str
+
     DATABASE_URL: str
 
     EMAIL_HOST: str

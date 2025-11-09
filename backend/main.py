@@ -1,10 +1,13 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 
 from config.settings import settings
 from routes import auth_router, news_router, user_router
 
 app = FastAPI()
+
+app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
 
 app.add_middleware(
     CORSMiddleware,

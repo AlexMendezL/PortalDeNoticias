@@ -2,13 +2,14 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from fastapi import HTTPException
+from fastapi import HTTPException, Request
+from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
 from config.settings import settings
 from models import user_model
 from schemas import user_schema, auth_schema
-from services.auth_service import AuthService
+from services.auth_service import AuthService, oauth
 
 
 def send_reset_email(to: str, reset_link: str):
@@ -114,3 +115,60 @@ class AuthController:
         db.commit()
 
         return {"message": "Password changed successfully"}
+
+    @staticmethod
+    async def oauth_login(req: Request, provider: str):
+        try:
+            redirect_url = getattr(settings, f"{provider.upper()}_REDIRECT_URI")
+            return await getattr(oauth, provider).authorize_redirect(req, redirect_url)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error to try login with oauth provider: {provider}")
+
+    @staticmethod
+    async def oauth_callback(request: Request, provider: str, db: Session):
+        try:
+            token = await getattr(oauth, provider).authorize_access_token(request)
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Error out callback: {str(e)}")
+
+        print("token", token)
+        if provider == "google":
+            user_info = token.get('userinfo')
+
+            email = user_info.get('email')
+            name = user_info.get('name')
+            oauth_id = user_info.get('sub')
+            avatar_url = user_info.get('picture')
+        elif provider == "github":
+            user_info = await oauth.github.get('user', token=token)
+            user_data = user_info.json()
+
+            email = user_data.get('email')
+            name = user_data.get('name')
+            oauth_id = str(user_data.get('id'))
+            avatar_url = user_data.get('avatar_url')
+        elif provider == "facebook":
+            user_info = await oauth.facebook.get('me', params={'fields': 'id,name,email,picture'}, token=token)
+            user_data = user_info.json()
+
+            email = user_data.get('email')
+            name = user_data.get('name')
+            oauth_id = user_data.get('id')
+            avatar_url = user_data.get('picture', {}).get('data', {}).get('url')
+
+        if not email:
+            raise HTTPException(status_code=400, detail="Email not provided by OAuth provider")
+
+        user = db.query(user_model.User).filter(user_model.User.email == email).first()
+        if not user:
+            user = user_model.User(email=email, name=name, oauth_id=oauth_id, oauth_provider=provider,
+                                   avatar_url=avatar_url, is_active=True, is_verified=True)
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+
+        access_token = AuthService.create_access_token({"user_id": str(user.id)})
+        refresh_token = AuthService.create_refresh_token({"user_id": str(user.id)})
+
+        frontend_url = f"{settings.FRONTEND_URL}/auth/callback?access_token={access_token}&refresh_token={refresh_token}"
+        return RedirectResponse(url=frontend_url)
