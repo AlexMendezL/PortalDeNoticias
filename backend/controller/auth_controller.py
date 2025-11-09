@@ -32,7 +32,7 @@ def send_reset_email(to: str, reset_link: str):
                               text-decoration: none; border-radius: 5px;">Restablecer contraseña</a>
                 </p>
                 <p>Si tú no solicitaste este cambio, puedes ignorar este correo.</p>
-                <p style="color: #888;">— El equipo de tu Portal de Noticias</p>
+                <p style="color: #888;">— El equipo de tu Portal de NewsPage</p>
             </div>
         </body>
     </html> """
