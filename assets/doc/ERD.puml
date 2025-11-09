@@ -1,0 +1,59 @@
+@startuml
+skinparam backgroundColor #F9F9F9
+skinparam shadowing true
+skinparam class {
+  BackgroundColor<<User>> #FFDDC1
+  BackgroundColor<<News>> #C1E1FF
+  BackgroundColor<<SavedNews>> #D5FFD1
+  BackgroundColor<<Category>> #FFE4B5
+  ArrowColor #444444
+  BorderColor #333333
+}
+
+!define table(x) class x << (T,#FFAAAA) >>
+
+package "Local DB" {
+    class User <<User>> {
+      * id : UUID
+      --
+      name : VARCHAR
+      email : VARCHAR
+      password : VARCHAR
+      created_at : TIMESTAMP
+      updated_at : TIMESTAMP
+    }
+
+    class SavedNews <<SavedNews>> {
+      * id : UUID
+      --
+      user_id : UUID
+      news_id : VARCHAR
+      created_at : TIMESTAMP
+    }
+}
+
+package "News (External API)" {
+    class News <<News>> {
+      * id : VARCHAR
+      --
+      title : VARCHAR
+      summary : TEXT
+      url : VARCHAR
+      published_at : TIMESTAMP
+      category_id : UUID
+    }
+
+    class Category <<Category>> {
+      * id : UUID
+      --
+      name : VARCHAR
+      description : TEXT
+    }
+}
+
+' Relaciones
+User ||--o{ SavedNews : "saves"
+SavedNews }o--|| News : "references"
+Category ||--o{ News : "has"
+
+@enduml

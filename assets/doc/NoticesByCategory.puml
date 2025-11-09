@@ -1,0 +1,14 @@
+@startuml
+start
+:Usuario abre portal de noticias;
+:Mostrar lista de categorías;
+:Usuario selecciona categoría;
+:Obtener noticias por categoría;
+:Mostrar lista de noticias;
+if (Usuario selecciona una noticia?) then (sí)
+  :Ir al detalle de la noticia;
+  stop
+else (no)
+  stop
+endif
+@enduml

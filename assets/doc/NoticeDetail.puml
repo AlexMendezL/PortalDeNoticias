@@ -1,0 +1,12 @@
+@startuml
+start
+:Usuario abre detalle de noticia;
+:Mostrar contenido de la noticia;
+:Obtener noticias relacionadas desde API;
+:Mostrar lista de noticias relacionadas;
+if (Usuario hace clic en "Guardar noticia"?) then (sí)
+  :Guardar noticia en tabla SavedNews;
+  :Confirmar guardado;
+endif
+stop
+@enduml

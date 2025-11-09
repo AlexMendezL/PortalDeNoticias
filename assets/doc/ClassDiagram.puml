@@ -1,0 +1,59 @@
+@startuml
+skinparam backgroundColor #F9F9F9
+skinparam shadowing true
+skinparam class {
+  ArrowColor #444444
+  BorderColor #333333
+}
+
+!define table(x) class x << (T,#FFAAAA) >>
+
+class User <<Entity>> {
+  + id: UUID
+  + name: str
+  + email: str
+  + password: str
+  + created_at: datetime
+  + updated_at: datetime
+  --
+  + login(email:str, password:str): bool
+  + register(name:str, email:str, password:str): User
+  + logout(): bool
+  + recover_password(email:str): bool
+}
+
+class SavedNews <<Entity>> {
+  + id: UUID
+  + user_id: UUID
+  + news_id: str
+  + created_at: datetime
+  --
+  + save_news(user_id:UUID, news_id:str): SavedNews
+  + get_saved_news(user_id:UUID): List[News]
+}
+
+package "News (External API)" {
+    class News <<Entity>> {
+      + id: str
+      + title: str
+      + category_id: UUID
+      --
+      + get_news(): List[News]
+      + get_news_by_category(category_id:UUID): List[News]
+      + get_news_detail(news_id:str): News
+    }
+
+    class Category <<Entity>> {
+      + id: UUID
+      + name: str
+      --
+      + get_all_categories(): List[Category]
+    }
+}
+
+' Relaciones
+User ||--o{ SavedNews : "saves"
+SavedNews }o--|| News : "references"
+Category ||--o{ News : "has"
+
+@enduml

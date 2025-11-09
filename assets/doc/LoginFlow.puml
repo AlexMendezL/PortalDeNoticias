@@ -1,0 +1,12 @@
+@startuml
+start
+:Usuario abre página de login;
+:Ingresa email/contraseña o login social;
+if (¿Credenciales válidas?) then (sí)
+  :Inicio de sesión exitoso;
+  stop
+else (no)
+  :Mostrar mensaje de error;
+  stop
+endif
+@enduml

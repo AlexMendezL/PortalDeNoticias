@@ -1,0 +1,12 @@
+@startuml
+start
+:Portal solicita noticias desde API externa;
+if (¿Respuesta de API correcta?) then (sí)
+  :Parsear datos JSON;
+  :Guardar temporal o mostrar directamente;
+  :Mostrar noticias al usuario;
+else (no)
+  :Mostrar mensaje de error;
+endif
+stop
+@enduml

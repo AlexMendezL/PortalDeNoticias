@@ -1,0 +1,7 @@
+@startuml
+start
+:Usuario hace clic en "Cerrar sesión";
+:Destruir sesión/token;
+:Redirigir a la página de login;
+stop
+@enduml

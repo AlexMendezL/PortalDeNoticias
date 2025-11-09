@@ -1,0 +1,15 @@
+@startuml
+start
+:Usuario abre página de registro;
+:Ingresa nombre, email, contraseña;
+:Validar datos;
+if (¿Datos válidos?) then (sí)
+  :Crear cuenta de usuario;
+  :Enviar correo de confirmación (opcional);
+  :Redirigir a login;
+  stop
+else (no)
+  :Mostrar errores de validación;
+  stop
+endif
+@enduml

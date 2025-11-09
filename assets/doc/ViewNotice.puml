@@ -1,0 +1,10 @@
+@startuml
+start
+:Mostrar lista de noticias;
+if (Usuario selecciona una noticia?) then (sí)
+  :Ir al detalle de la noticia;
+  stop
+else (no)
+  stop
+endif
+@enduml
