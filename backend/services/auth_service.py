@@ -1,12 +1,13 @@
 # from authlib.integrations.starlette_client import OAuth
 from passlib.context import CryptContext
 from jose import JWTError, jwt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from config.settings import settings
 
 # Password hashing
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto", argon2__memory_cost=65536, argon2__time_cost=3,
                            argon2__parallelism=2)
+
 
 # # OAuth2 Configuration
 # oauth = OAuth()
@@ -51,16 +52,17 @@ class AuthService:
         return pwd_context.hash(password)
 
     @staticmethod
-    def create_access_token(data: dict) -> str:
+    def create_access_token(data: dict, expire: int = settings.ACCESS_TOKEN_EXPIRE_MINUTES) -> str:
         to_encode = data.copy()
-        expire = datetime.now() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        now = datetime.now(timezone.utc)
+        expire = now + timedelta(minutes=expire)
         to_encode.update({"exp": expire, "type": "access"})
         return jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
     @staticmethod
     def create_refresh_token(data: dict) -> str:
         to_encode = data.copy()
-        expire = datetime.now() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+        expire = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
         to_encode.update({"exp": expire, "type": "refresh"})
         return jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
@@ -69,5 +71,6 @@ class AuthService:
         try:
             payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
             return payload
-        except JWTError:
+        except JWTError as e:
+            print("ERROR", e)
             return None
