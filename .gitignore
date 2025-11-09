@@ -1,0 +1,9 @@
+.idea/
+.vscode/
+
+.env
+.env.dev
+.env.local
+.env.prod
+
+
