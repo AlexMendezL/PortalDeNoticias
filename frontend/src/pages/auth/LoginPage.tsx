@@ -67,7 +67,7 @@ export default function LoginPage() {
                             name="password"
                             render={({field}) => (
                                 <FormItem>
-                                    <FormLabel>Correo electrónico</FormLabel>
+                                    <FormLabel>Contraseña</FormLabel>
                                     <FormControl>
                                         <Input placeholder="*******" {...field} type="password"/>
                                     </FormControl>
