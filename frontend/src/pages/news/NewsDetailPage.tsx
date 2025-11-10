@@ -1,18 +1,9 @@
-import { PageHeader, PageHeaderHeading } from "@/components/page-header.tsx";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card.tsx";
+import NewsDetailComponent from "@/components/news/news-detail.tsx";
 
-export default function NewsPage() {
+export default function NewsDetailPage() {
     return (
         <>
-            <PageHeader>
-                <PageHeaderHeading>Sample Page</PageHeaderHeading>
-            </PageHeader>
-            <Card>
-                <CardHeader>
-                    <CardTitle>Card Title</CardTitle>
-                    <CardDescription>Card description.</CardDescription>
-                </CardHeader>
-            </Card>
+            <NewsDetailComponent/>
         </>
     )
 }
