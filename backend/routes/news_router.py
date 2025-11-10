@@ -32,7 +32,7 @@ def news():
         raise HTTPException(status_code=502, detail=f"Error to connect to extern API: {e}")
 
     data = response.json()
-    return {"data": data}
+    return data
 
 
 @router.get("/categories")
@@ -40,9 +40,31 @@ def categories():
     return {"data": ["article", "blogs", "reports"]}
 
 
-@router.get("/relatedNews")
-def news():
-    return {"message": "related news"}
+@router.get("/detail/{category}/{id}")
+def detail(category: str, id: int):
+    url = f"{get_api_url(category)}/{id}"
+    try:
+        response = requests.get(url, timeout=15)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=502, detail=f"Error to connect to extern API: {e}")
+
+    data = response.json()
+    return data
+
+
+@router.get("/relatedNews/{category}/{news_site}")
+def related_news(category: str, news_site: str):
+    url = f"{get_api_url(category)}/?news_site={news_site}"
+    print(url)
+    try:
+        response = requests.get(url, timeout=15)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=502, detail=f"Error to connect to extern API: {e}")
+
+    data = response.json()
+    return data
 
 
 @router.get("/newsByCategory/{category}")
