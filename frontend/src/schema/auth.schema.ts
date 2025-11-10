@@ -21,3 +21,9 @@ export const signUpFormSchema = z.object({
 })
 
 export type SignUpFormSchemaType = z.infer<typeof signUpFormSchema>
+
+export const forgotFormSchema = z.object({
+    email: z.email(),
+})
+
+export type ForgotFormSchemaType = z.infer<typeof forgotFormSchema>
