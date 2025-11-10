@@ -1,4 +1,3 @@
-import {PageHeader, PageHeaderHeading} from "@/components/page-header.tsx";
 import {
     Form,
     FormControl,
@@ -19,6 +18,8 @@ import {API} from "@/config/app.ts";
 import {toast} from "sonner"
 import {Separator} from "@/components/ui/separator.tsx";
 import {Link} from "react-router-dom";
+import ButtonSocialGoogle from "@/components/button-social-google.tsx";
+import ButtonSocialFacebook from "@/components/button-social-facebook.tsx";
 
 export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false)
@@ -89,12 +90,8 @@ export default function LoginPage() {
                     Otras opciones para iniciar sesión
                 </p>
                 <div className="flex gap-3 flex-col sm:flex-row">
-                    <Button variant="outline" className="border-gray-300 hover:bg-gray-100 flex-1">
-                        Iniciar con sesión con Google
-                    </Button>
-                    <Button className="bg-[#1877F2] hover:bg-[#166fe5] text-white flex-1">
-                        Iniciar con sesión con Facebook
-                    </Button>
+                    <ButtonSocialGoogle/>
+                    <ButtonSocialFacebook/>
                 </div>
                 <Separator/>
                 <div className="text-center mt-8">
