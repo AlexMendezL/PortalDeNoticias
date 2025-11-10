@@ -39,7 +39,7 @@ def send_reset_email(to: str, reset_link: str):
 
     msg.attach(MIMEText(html_message, "html"))
     try:
-        with smtplib.SMTP(host="localhost", port=1025) as smtp:
+        with smtplib.SMTP(host=settings.EMAIL_HOST, port=settings.EMAIL_PORT) as smtp:
             if settings.EMAIL_USE_TLS:
                 smtp.starttls()
             if settings.EMAIL_LOGIN:
