@@ -93,7 +93,7 @@ class AuthController:
         if user:
             token = AuthService.create_access_token({"user_id": str(user.id)},
                                                     settings.FORGOT_PASSWORD_TOKEN_EXPIRE_MINUTES)
-            redirect = f"{settings.FRONTEND_URL}/forget-password?token={token}"
+            redirect = f"{settings.FRONTEND_URL}/auth/forgetPasswordConfirm?token={token}"
             send_reset_email(user.email, redirect)
 
         return {"message": "Email sent"}
