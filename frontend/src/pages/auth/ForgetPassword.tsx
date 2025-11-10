@@ -36,7 +36,7 @@ export default function ForgetPasswordPage() {
             navigate("/")
         } catch (e) {
             toast.error('Error al enviar el correo', {
-                description: 'Si el error continua, comuníquese con soporte@noticas.com'
+                description: 'Si el error continua, comuníquese con soporte@portal-noticias.com'
             })
         } finally {
             setIsLoading(false)

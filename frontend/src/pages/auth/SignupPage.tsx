@@ -17,7 +17,7 @@ import axios from "axios";
 import {API} from "@/config/app.ts";
 import {toast} from "sonner"
 import {Separator} from "@/components/ui/separator.tsx";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import ButtonSocialGoogle from "@/components/button-social-google.tsx";
 import ButtonSocialFacebook from "@/components/button-social-facebook.tsx";
 import {Label} from "@/components/ui/label.tsx";
@@ -25,6 +25,7 @@ import {Checkbox} from "@/components/ui/checkbox.tsx";
 
 
 export default function SignupPage() {
+    const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
     const form = useForm<SignUpFormSchemaType>({
         resolver: zodResolver(signUpFormSchema)
@@ -33,16 +34,16 @@ export default function SignupPage() {
     const onSubmit = async (data: SignUpFormSchemaType) => {
         setIsLoading(true)
         try {
-            console.log(data)
-            return
-            const response = await axios.post(`${API.URL}/auth/login`, data)
-            console.log(response)
+            await axios.post(`${API.URL}/auth/signup`, data)
+            toast.success('Registro realizado correctamente')
+            navigate('/auth/login')
         } catch (e) {
-            toast.error('Correo o contraseña inválida')
+            toast.error('Error al registrarse', {
+                description: 'Si el error continua, comuníquese con soporte@portal-noticias.com'
+            })
         } finally {
             setIsLoading(false)
         }
-        console.log(data)
     }
 
     return (
