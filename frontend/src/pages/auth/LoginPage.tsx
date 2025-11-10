@@ -13,16 +13,17 @@ import {loginFormSchema, LoginFormSchemaType} from "@/schema/auth.schema.ts";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useState} from "react";
 import {Spinner} from "@/components/ui/spinner.tsx";
-import axios from "axios";
-import {API} from "@/config/app.ts";
 import {toast} from "sonner"
 import {Separator} from "@/components/ui/separator.tsx";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import ButtonSocialGoogle from "@/components/button-social-google.tsx";
 import ButtonSocialFacebook from "@/components/button-social-facebook.tsx";
+import {useAuthStore} from "@/store/useAuthStore.ts";
 
 export default function LoginPage() {
+    const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
+    const login = useAuthStore((state) => state.login)
     const form = useForm<LoginFormSchemaType>({
         resolver: zodResolver(loginFormSchema)
     })
@@ -30,14 +31,13 @@ export default function LoginPage() {
     const onSubmit = async (data: LoginFormSchemaType) => {
         setIsLoading(true)
         try {
-            const response = await axios.post(`${API.URL}/auth/login`, data)
-            console.log(response)
+            await login(data)
+            navigate('/news')
         } catch (e) {
             toast.error('Correo o contraseña inválida')
         } finally {
             setIsLoading(false)
         }
-        console.log(data)
     }
 
     return (
