@@ -45,7 +45,7 @@ export default function ForgetPasswordPage() {
 
     return (
         <>
-            <div className="my-auto flex flex-col gap-6 mx-auto">
+            <div className="my-auto flex flex-col gap-6 mx-auto w-[100%] sm:w-[80%]">
 
                 <h1 className="font-bold text-4xl">Restaurar contraseña</h1>
 

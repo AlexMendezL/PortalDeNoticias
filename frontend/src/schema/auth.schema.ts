@@ -27,3 +27,14 @@ export const forgotFormSchema = z.object({
 })
 
 export type ForgotFormSchemaType = z.infer<typeof forgotFormSchema>
+
+
+export const forgotPasswordConfirmFormSchema = z.object({
+    password: z.string().min(8).max(64),
+    confirm_password: z.string().min(8).max(64),
+}).refine((data) => data.password === data.confirm_password, {
+    message: "Passwords do not match",
+    path: ['confirm_password']
+})
+
+export type ForgotPasswordConfirmFormSchemaType = z.infer<typeof forgotPasswordConfirmFormSchema>
