@@ -27,4 +27,7 @@ class UserResponse(UserBase):
     id: UUID
 
 
-
+class MeResponse(BaseModel):
+    email: str
+    name: str
+    avatar_url: str | None

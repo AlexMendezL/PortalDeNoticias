@@ -12,6 +12,6 @@ router = APIRouter(
 def ping():
     return {"message": "pong user"}
 
-@router.get("/me", response_model=user_schema.UserBase)
-def me(current_user: user_schema.UserBase = Depends(get_current_user)):
+@router.get("/me", response_model=user_schema.MeResponse)
+def me(current_user: user_schema.MeResponse = Depends(get_current_user)):
     return UserController.me(current_user)
