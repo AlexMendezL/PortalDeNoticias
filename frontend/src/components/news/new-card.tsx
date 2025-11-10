@@ -1,10 +1,9 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Link} from "react-router-dom";
-import {CalendarDays, ChevronRight, User} from "lucide-react";
+import {ChevronRight, User} from "lucide-react";
 import {NewsItem} from "@/types/news.types.ts";
 import * as React from "react";
-import {parseISO, format} from "date-fns";
 
 type NewCardComponentProps = {
     news: NewsItem
@@ -12,8 +11,6 @@ type NewCardComponentProps = {
 }
 
 const NewsCardComponent: React.FC<NewCardComponentProps> = ({news, category}) => {
-    const date = parseISO(news.published_at)
-    const formattedDate = format(date, 'MM/dd/yyyy')
 
     return (
         <>
@@ -31,15 +28,11 @@ const NewsCardComponent: React.FC<NewCardComponentProps> = ({news, category}) =>
                             <User size={18}/>
                             <p>{news.authors.length > 0 ? news.authors[0].name : 'N/A'}</p>
                         </div>
-                        <div className="flex gap-0.5 items-center">
-                            <CalendarDays size={18}/>
-                            <p>{formattedDate}</p>
-                        </div>
                     </div>
                     <CardTitle className="line-clamp-2 leading-normal">
                         {news.title}
                     </CardTitle>
-                    <CardDescription className="line-clamp-3 leading-relaxed">
+                    <CardDescription className="line-clamp-2 leading-relaxed">
                         {news.summary}
                     </CardDescription>
 
