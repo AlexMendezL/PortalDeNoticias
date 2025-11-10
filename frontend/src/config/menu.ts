@@ -10,6 +10,7 @@ type MenuItemType = {
     external?: string
     icon?: LucideIcon
     items?: MenuItemType[]
+    authRequired: boolean
 }
 type MenuType = MenuItemType[]
 
@@ -17,11 +18,13 @@ export const mainMenu: MenuType = [
     {
         title: 'Inicio',
         url: '/',
-        icon: Gauge
+        icon: Gauge,
+        authRequired: false
     },
     {
         title: 'Noticias',
         url: '/news',
         icon: Files,
+        authRequired: true
     },
 ]
