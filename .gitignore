@@ -6,4 +6,7 @@
 .env.local
 .env.prod
 .env.docker
+.env.docker.dev
+.env.docker.local
+.env.docker.prod
 
