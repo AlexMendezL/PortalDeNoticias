@@ -1,3 +1,6 @@
+from schemas import user_schema
 
 class UserController:
-    pass
+    @staticmethod
+    def me(current_user:user_schema.UserBase):
+        return current_user
