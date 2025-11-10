@@ -10,17 +10,25 @@ import ForgetPasswordConfirmPage from "@/pages/auth/ForgetPasswordConfirm.tsx";
 import ProtectedRoute from "@/components/auht/ProtectedRoute.tsx";
 import PublicRoute from "@/components/auht/PublicRoute.tsx";
 import AuthSocialCallbackPage from "@/pages/auth/AuthSocialCallbackPage.tsx";
+import NewsDetailPage from "@/pages/news/NewsDetailPage.tsx";
 
 export default function Router() {
     return (
         <Routes>
             <Route element={<AppLayout/>}>
                 <Route path="" element={<HomePage/>}/>
-                <Route path="news" element={
-                    <ProtectedRoute>
-                        <NewsPage/>
-                    </ProtectedRoute>
-                }/>
+                <Route
+                    path="news/*"
+                    element={
+                        <ProtectedRoute>
+                            <Routes>
+                                <Route path="" element={<NewsPage/>}/>
+                                <Route path="detail/:category/:id" element={<NewsDetailPage/>}/>
+                            </Routes>
+                        </ProtectedRoute>
+                    }
+                />
+
                 <Route
                     path="auth/*"
                     element={
