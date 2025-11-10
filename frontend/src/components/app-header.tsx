@@ -19,12 +19,11 @@ import {useAuthStore} from "@/store/useAuthStore.ts";
 
 export function AppHeader() {
     const location = useLocation()
-    const isAuth = useAuthStore((state) => state.auth)
-    const user = useAuthStore((state) => state.user)
+    const auth = useAuthStore((state) => state.auth)
     const logout = useAuthStore((state) => state.logout)
 
     const isVisible = (authRequired: boolean): boolean => {
-        if (authRequired) return !isAuth
+        if (authRequired) return !auth
         return false
     }
 
@@ -93,7 +92,7 @@ export function AppHeader() {
                         </nav>
                     </div>
                     <nav className="flex gap-1">
-                        {user &&
+                        {auth &&
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button
@@ -108,9 +107,9 @@ export function AppHeader() {
                                 <DropdownMenuContent className='w-56' align='end' forceMount>
                                     <DropdownMenuLabel className='font-normal'>
                                         <div className='flex flex-col space-y-1'>
-                                            <p className='text-sm font-medium leading-none'>{user.name}</p>
+                                            <p className='text-sm font-medium leading-none'>{auth.user.name}</p>
                                             <p className='text-xs leading-none text-muted-foreground'>
-                                                {user.email}
+                                                {auth.user.email}
                                             </p>
                                         </div>
                                     </DropdownMenuLabel>
