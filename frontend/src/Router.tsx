@@ -9,6 +9,7 @@ import ForgetPasswordPage from "@/pages/auth/ForgetPassword.tsx";
 import ForgetPasswordConfirmPage from "@/pages/auth/ForgetPasswordConfirm.tsx";
 import ProtectedRoute from "@/components/auht/ProtectedRoute.tsx";
 import PublicRoute from "@/components/auht/PublicRoute.tsx";
+import AuthSocialCallbackPage from "@/pages/auth/AuthSocialCallbackPage.tsx";
 
 export default function Router() {
     return (
@@ -25,6 +26,7 @@ export default function Router() {
                     element={
                         <PublicRoute>
                             <Routes>
+                                <Route path="callback" element={<AuthSocialCallbackPage/>}/>
                                 <Route path="login" element={<LoginPage/>}/>
                                 <Route path="signup" element={<SignupPage/>}/>
                                 <Route path="forgetPassword" element={<ForgetPasswordPage/>}/>

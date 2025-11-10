@@ -170,5 +170,5 @@ class AuthController:
         access_token = AuthService.create_access_token({"user_id": str(user.id)})
         refresh_token = AuthService.create_refresh_token({"user_id": str(user.id)})
 
-        frontend_url = f"{settings.FRONTEND_URL}/auth/callback?access_token={access_token}"
+        frontend_url = f"{settings.FRONTEND_URL}/auth/callback?access_token={access_token}&refresh_token={refresh_token}"
         return RedirectResponse(url=frontend_url)

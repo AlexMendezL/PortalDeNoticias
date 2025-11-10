@@ -2,6 +2,7 @@ import {create} from 'zustand'
 import axios from "axios";
 import {API} from "@/config/app.ts";
 import {LoginFormSchemaType} from "@/schema/auth.schema.ts";
+import {toast} from "sonner";
 
 const KEY_TOKEN = "token"
 const KEY_REFRESH_TOKEN = "refreshToken"
@@ -25,24 +26,22 @@ interface State {
     login: (data: LoginFormSchemaType) => Promise<void>
     logout: () => void
     me: (access_token: string, refresh_token: string) => Promise<void>
-    // oauth: () => void
+    oauth: (access_token: string, refresh_token: string) => Promise<void>
     checkAuth: () => Promise<void>
 }
 
 export const useAuthStore = create<State>()((set, get) => ({
     loading: false,
     auth: null,
-    user: null,
 
 
     checkAuth: async () => {
         set(() => ({loading: true}))
-        console.log("init")
         const access_token = localStorage.getItem(KEY_TOKEN)
         const refresh_token = localStorage.getItem(KEY_REFRESH_TOKEN)
 
         if (!access_token || !refresh_token) {
-            set(() => ({loading: false, user: null, auth: null}))
+            set(() => ({loading: false, auth: null}))
             return
         }
         try {
@@ -65,6 +64,7 @@ export const useAuthStore = create<State>()((set, get) => ({
 
             const {access_token, refresh_token} = response.data
             await get().me(access_token, refresh_token)
+            toast.success(`Bienvenido, ${get().auth?.user.name}`)
         } catch (error) {
             throw error
         } finally {
@@ -86,7 +86,7 @@ export const useAuthStore = create<State>()((set, get) => ({
                 email: string
             }>(`${API.URL}/user/me`, {
                 headers: {
-                    Authorization: `Bearer ${access_token}`, // 👈 Aquí va el token
+                    Authorization: `Bearer ${access_token}`,
                 },
             })
 
@@ -101,4 +101,17 @@ export const useAuthStore = create<State>()((set, get) => ({
             set(() => ({loading: false}))
         }
     },
+
+    oauth: async (access_token: string, refresh_token: string) => {
+        set(() => ({loading: true}))
+
+        try {
+            await get().me(access_token, refresh_token)
+            toast.success(`Bienvenido, ${get().auth?.user.name}!`)
+        } catch (error) {
+            throw error
+        } finally {
+            set(() => ({loading: false}))
+        }
+    }
 }))
