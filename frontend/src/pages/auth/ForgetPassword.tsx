@@ -9,7 +9,7 @@ import {
 import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {useForm} from "react-hook-form";
-import {forgotFormSchema, ForgotFormSchemaType } from "@/schema/auth.schema.ts";
+import {forgotFormSchema, ForgotFormSchemaType} from "@/schema/auth.schema.ts";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useState} from "react";
 import {Spinner} from "@/components/ui/spinner.tsx";
@@ -17,9 +17,10 @@ import axios from "axios";
 import {API} from "@/config/app.ts";
 import {toast} from "sonner"
 import {Separator} from "@/components/ui/separator.tsx";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 export default function ForgetPasswordPage() {
+    const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
     const form = useForm<ForgotFormSchemaType>({
         resolver: zodResolver(forgotFormSchema)
@@ -28,10 +29,11 @@ export default function ForgetPasswordPage() {
     const onSubmit = async (data: ForgotFormSchemaType) => {
         setIsLoading(true)
         try {
-            console.log(data)
-            return
-            const response = await axios.post(`${API.URL}/auth/login`, data)
-            console.log(response)
+            await axios.post(`${API.URL}/auth/forget_password`, data)
+            toast.success('Solicitud de recuperación enviado', {
+                description: 'Revise bandeja de entrada o span y continue con el proceso indicado en el coreo'
+            })
+            navigate("/")
         } catch (e) {
             toast.error('Error al enviar el correo', {
                 description: 'Si el error continua, comuníquese con soporte@noticas.com'
