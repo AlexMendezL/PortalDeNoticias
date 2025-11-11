@@ -1,14 +1,14 @@
 services:
 
   # Database (PostgresSQL)
-  dev-app-postgres-db:
+  dev-app-local-postgres-db:
     image: postgres:16-alpine
-    container_name: dev-app-postgres-db
+    container_name: dev-app-local-postgres-db
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     restart: unless-stopped
     env_file:
-      - .env.docker
+      - .env.docker.local
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
     networks:
@@ -22,25 +22,27 @@ services:
 
 
   # pgAdmin
-  dev-app-pgadmin:
+  dev-app-local-pgadmin:
     image: dpage/pgadmin4
-    container_name: dev-app-pgadmin
+    container_name: dev-app-local-pgadmin
     ports:
       - "${PGADMIN_PORT:-8080}:80"
     env_file:
-      - .env.docker
+      - .env.docker.local
     volumes:
       - pgadmin-data:/var/lib/pgadmin
     depends_on:
-      - dev-app-postgres-db
+      - dev-app-local-postgres-db
     networks:
       - app-network
 
   # smtp dummy (smtp4dev)
-  dev-app-smtp:
-    container_name: dev-app-smtp
+  dev-app-local-smtp:
+    container_name: dev-app-local-smtp
     image: rnwood/smtp4dev
     restart: always
+    env_file:
+      - .env.docker.local
     ports:
       - "${SMTP_4DEV_PORT:-1025}:25"       # SMTP server
       - "${SMTP_4DEV_WEB_PORT:-1080}:80"   # Web UI
@@ -51,25 +53,44 @@ services:
       - app-network
 
   # Backend
-  dev-app-back:
+  dev-app-local-back:
     build:
       context: ./backend
       dockerfile: dev.Dockerfile
-    container_name: dev-app-back
+    container_name: dev-app-local-back
     ports:
       - "${APP_BACKEND_PORT:-8000}:8000"
     volumes:
       - ./backend:/app
     env_file:
-      - backend/.env
+      - .env.docker.local
     depends_on:
-      dev-app-postgres-db:
+      dev-app-local-postgres-db:
         condition: service_healthy
-      dev-app-smtp:
+      dev-app-local-smtp:
         condition: service_started
     networks:
       - app-network
     command: poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+#  # front
+#  dev-app-local-front:
+#    build:
+#      context: ./frontend
+#      dockerfile: dev.Dockerfile
+#    container_name: dev-app-local-front
+#    ports:
+#      - "${APP_FRONT_PORT:-5173}:5173"
+#    volumes:
+#      - ./frontend:/app
+#      - /app/node_modules
+#    env_file:
+#      - frontend/.env.development
+#    depends_on:
+#      dev-app-local-back:
+#        condition: service_started
+#    networks:
+#      - app-network
 
 volumes:
   postgres-db-volume:
