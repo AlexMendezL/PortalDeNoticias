@@ -1,11 +1,11 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader} from "@/components/ui/card.tsx";
 import {Skeleton} from "@/components/ui/skeleton.tsx";
 
-const NewsCardSkeletonComponent: React.FC<{ key: number }> = ({key}) => {
+const NewsCardSkeletonComponent: React.FC<{ index: number }> = ({index}) => {
 
     return (
         <>
-            <Card key={key}>
+            <Card key={index}>
                 <CardHeader>
                     <Skeleton className="w-full h-60 object-cover rounded-t-lg"/>
                 </CardHeader>

@@ -77,4 +77,4 @@ def news_by_category(category: str | int):
         raise HTTPException(status_code=502, detail=f"Error to connect to extern API: {e}")
 
     data = response.json()
-    return {"data": data}
+    return data
