@@ -2,8 +2,8 @@
 
 ## 1. Descripción General
 
-Este proyecto es una aplicación web para visualizar noticias.  
-Consta de un frontend en `React (Vite)` y un backend en `FastAPI`, los cuales se comunican mediante una API REST.  
+Este proyecto es una aplicación web para visualizar noticias.
+Consta de un frontend en `React (Vite)` y un backend en `FastAPI`, los cuales se comunican mediante una API REST.
 El proyecto utiliza `docker` para la orquestación y ejecución en entornos locales, desarrollo o producción.
 
 ---
