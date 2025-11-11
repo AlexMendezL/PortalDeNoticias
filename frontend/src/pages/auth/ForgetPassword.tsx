@@ -66,7 +66,7 @@ export default function ForgetPasswordPage() {
                         />
                         <Button type="submit" disabled={isLoading} size="lg">
                             {isLoading && <Spinner/>}
-                            Iniciar sesión
+                            Enviar solicitud
                         </Button>
                     </form>
                 </Form>
