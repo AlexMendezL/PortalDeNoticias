@@ -1,0 +1,103 @@
+services:
+
+  # Database (PostgresSQL)
+  dev-app-postgres-db:
+    image: postgres:16-alpine
+    container_name: dev-app-postgres-db
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+
+  # pgAdmin
+  dev-app-pgadmin:
+    image: dpage/pgadmin4
+    container_name: dev-app-pgadmin
+    ports:
+      - "${PGADMIN_PORT:-8080}:80"
+    env_file:
+      - .env.docker
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - dev-app-postgres-db
+    networks:
+      - app-network
+
+  # smtp dummy (smtp4dev)
+  dev-app-smtp:
+    container_name: dev-app-smtp
+    image: rnwood/smtp4dev
+    restart: always
+    ports:
+      - "${SMTP_4DEV_PORT:-1025}:25"       # SMTP server
+      - "${SMTP_4DEV_WEB_PORT:-1080}:80"   # Web UI
+      - "${SMTP_4DEV_IMAP_PORT:-1143}:143" # IMAP
+    volumes:
+      - smtp4dev-data:/smtp4dev
+    networks:
+      - app-network
+
+  # Backend
+  dev-app-back:
+    build:
+      context: ./backend
+      dockerfile: dev.Dockerfile
+    container_name: dev-app-back
+    ports:
+      - "${APP_BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - backend/.env
+    depends_on:
+      dev-app-postgres-db:
+        condition: service_healthy
+      dev-app-smtp:
+        condition: service_started
+    networks:
+      - app-network
+    command: poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # front
+  dev-app-front:
+    build:
+      context: ./frontend
+      dockerfile: dev.Dockerfile
+    container_name: dev-app-front
+    ports:
+      - "${APP_FRONT_PORT:-5173}:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    env_file:
+      - frontend/.env.development
+    depends_on:
+      dev-app-back:
+        condition: service_started
+    networks:
+      - app-network
+
+volumes:
+  postgres-db-volume:
+    driver: local
+  pgadmin-data:
+    driver: local
+  smtp4dev-data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
