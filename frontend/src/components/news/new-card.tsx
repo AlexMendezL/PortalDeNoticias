@@ -14,7 +14,7 @@ const NewsCardComponent: React.FC<NewCardComponentProps> = ({news, category}) =>
 
     return (
         <>
-            <Card>
+            <Card key={news.id}>
                 <CardHeader>
                     <img
                         src={news.image_url}

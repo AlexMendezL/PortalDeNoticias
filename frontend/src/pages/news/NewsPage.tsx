@@ -55,7 +55,7 @@ export default function NewsPage() {
     return (
         <>
             <PageHeader>
-                <PageHeaderHeading>News Page</PageHeaderHeading>
+                <PageHeaderHeading>Últimas noticias</PageHeaderHeading>
             </PageHeader>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-8">
@@ -64,7 +64,7 @@ export default function NewsPage() {
                         .map((_, index) => <NewsCardSkeletonComponent key={index}/>)
                 }
                 {news.length > 0 &&
-                    news.map((item, index) => <NewsCardComponent key={index} news={item} category={"articles"}/>)
+                    news.map((item) => <NewsCardComponent news={item} category={"articles"}/>)
                 }
             </div>
             <Pagination>
@@ -72,13 +72,13 @@ export default function NewsPage() {
                     <PaginationItem>
                         <PaginationPrevious
                             onClick={() => getData(previous)}
-                            className={`${!previous ? "pointer-events-none opacity-50 cursor-not-allowed" : ""}`}
+                            className={`${!previous || loading ? "pointer-events-none opacity-50 cursor-not-allowed" : ""}`}
                         />
                     </PaginationItem>
                     <PaginationItem>
                         <PaginationNext
                             onClick={() => getData(next)}
-                            className={`${!next? "pointer-events-none opacity-50 cursor-not-allowed" : ""}`}
+                            className={`${!next || loading ? "pointer-events-none opacity-50 cursor-not-allowed" : ""}`}
                         />
                     </PaginationItem>
                 </PaginationContent>
