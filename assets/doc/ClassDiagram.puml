@@ -16,21 +16,14 @@ class User <<Entity>> {
   + created_at: datetime
   + updated_at: datetime
   --
-  + login(email:str, password:str): bool
-  + register(name:str, email:str, password:str): User
-  + logout(): bool
-  + recover_password(email:str): bool
+  + signup(user: user_schema.UserCreate, db: Session): UserBase
+  + login(user: auth_schema.LoginRequest, db: Session): LoginResponse
+  + forget_password(data: auth_schema.ForgetPasswordRequest, db: Session): void
+  + forget_password_confirm(data: auth_schema.ForgetPasswordConfirmRequest, db: Session): void
+  + oauth_login(req: Request, provider: str): RedirectResponse
+  + oauth_callback(request: Request, provider: str, db: Session): RedirectResponse
 }
 
-class SavedNews <<Entity>> {
-  + id: UUID
-  + user_id: UUID
-  + news_id: str
-  + created_at: datetime
-  --
-  + save_news(user_id:UUID, news_id:str): SavedNews
-  + get_saved_news(user_id:UUID): List[News]
-}
 
 package "News (External API)" {
     class News <<Entity>> {
@@ -38,9 +31,10 @@ package "News (External API)" {
       + title: str
       + category_id: UUID
       --
-      + get_news(): List[News]
-      + get_news_by_category(category_id:UUID): List[News]
-      + get_news_detail(news_id:str): News
+      + news(): List[News]
+      + detail(category:str, id:int): News
+      + related_news(category: str, news_site: str): List[News]
+      + news_by_category(category:str | int): List[News]
     }
 
     class Category <<Entity>> {
@@ -52,8 +46,6 @@ package "News (External API)" {
 }
 
 ' Relaciones
-User ||--o{ SavedNews : "saves"
-SavedNews }o--|| News : "references"
 Category ||--o{ News : "has"
 
 @enduml

@@ -23,13 +23,6 @@ package "Local DB" {
       updated_at : TIMESTAMP
     }
 
-    class SavedNews <<SavedNews>> {
-      * id : UUID
-      --
-      user_id : UUID
-      news_id : VARCHAR
-      created_at : TIMESTAMP
-    }
 }
 
 package "News (External API)" {
@@ -52,8 +45,6 @@ package "News (External API)" {
 }
 
 ' Relaciones
-User ||--o{ SavedNews : "saves"
-SavedNews }o--|| News : "references"
 Category ||--o{ News : "has"
 
 @enduml
