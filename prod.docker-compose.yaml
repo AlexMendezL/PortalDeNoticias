@@ -1,0 +1,83 @@
+services:
+
+  # Database (PostgresSQL)
+  prod-app-postgres-db:
+    image: postgres:16-alpine
+    container_name: prod-app-postgres-db
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    restart: unless-stopped
+    env_file:
+      - .env.docker.prod
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    networks:
+      - app-news
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+
+  # smtp dummy (smtp4dev)
+  prod-app-smtp:
+    container_name: prod-app-smtp
+    image: rnwood/smtp4dev
+    restart: always
+    env_file:
+      - .env.docker.prod
+    ports:
+      - "${SMTP_4DEV_PORT:-1025}:25"
+      - "${SMTP_4DEV_WEB_PORT:-1080}:80"
+      - "${SMTP_4DEV_IMAP_PORT:-1143}:143"
+    volumes:
+      - smtp4dev-data:/smtp4dev
+    networks:
+      - app-news
+
+  # Backend
+  prod-app-back:
+    build:
+      context: backend
+      dockerfile: prod.Dockerfile
+    container_name: prod-app-back
+    ports:
+      - "${APP_BACKEND_PORT:-8000}:8000"
+    env_file:
+      - .env.docker.prod
+    depends_on:
+      prod-app-postgres-db:
+        condition: service_healthy
+      prod-app-smtp:
+        condition: service_started
+    networks:
+      - app-news
+
+
+  # Front
+  prod-app-front:
+    build:
+      context: frontend
+      dockerfile: prod.Dockerfile
+    container_name: prod-app-front
+    ports:
+      - "${APP_FRONTEND_PORT:-8080}:8080"
+    env_file:
+      - .env.docker.prod
+    depends_on:
+      prod-app-back:
+        condition: service_started
+    networks:
+      - app-news
+
+volumes:
+  postgres-db-volume:
+    driver: local
+  smtp4dev-data:
+    driver: local
+
+networks:
+  app-news:
+    driver: bridge
