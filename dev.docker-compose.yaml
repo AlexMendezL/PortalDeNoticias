@@ -72,23 +72,23 @@ services:
     command: poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
   # front
-#  dev-app-front:
-#    build:
-#      context: ./frontend
-#      dockerfile: dev.Dockerfile
-#    container_name: dev-app-front
-#    ports:
-#      - "${APP_FRONT_PORT:-5173}:5173"
-#    volumes:
-#      - ./frontend:/app
-#      - /app/node_modules
-#    env_file:
-#      - frontend/.env.development
-#    depends_on:
-#      dev-app-back:
-#        condition: service_started
-#    networks:
-#      - app-network
+  dev-app-front:
+    build:
+      context: ./frontend
+      dockerfile: dev.Dockerfile
+    container_name: dev-app-front
+    ports:
+      - "${APP_FRONT_PORT:-5173}:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    env_file:
+      - frontend/.env.development
+    depends_on:
+      dev-app-back:
+        condition: service_started
+    networks:
+      - app-network
 
 volumes:
   postgres-db-volume:
