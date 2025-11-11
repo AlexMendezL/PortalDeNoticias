@@ -1,10 +1,14 @@
 import NewsDetailComponent from "@/components/news/news-detail.tsx";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {NewsItem} from "@/types/news.types.ts";
 import axios from "axios";
 import {API} from "@/config/app.ts";
 import {useAuthStore} from "@/store/useAuthStore.ts";
+import {PageHeader, PageHeaderHeading} from "@/components/page-header.tsx";
+import {Button} from "@/components/ui/button.tsx";
+import {ChevronRight} from "lucide-react";
+import * as React from "react";
 
 export default function NewsDetailPage() {
     const {category, id} = useParams()
@@ -30,8 +34,13 @@ export default function NewsDetailPage() {
     }, [category, id])
 
     return (
-        <>
+        <div>
+            <PageHeader>
+                <PageHeaderHeading>
+                    Detalle de noticia
+                </PageHeaderHeading>
+            </PageHeader>
             <NewsDetailComponent news={news} category={category ?? ''}/>
-        </>
+        </div>
     )
 }
